@@ -2,10 +2,13 @@ package example.echo;
 
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
@@ -52,6 +55,10 @@ public final class EchoServer {
                             if (Objects.nonNull(sslCtx)) {
                                 pipeline.addLast(sslCtx.newHandler(socketChannel.alloc()));
                             }
+
+//                            pipeline.addLast(new LineBasedFrameDecoder(1024));
+                            pipeline.addLast(new DelimiterBasedFrameDecoder(2048, Unpooled.copiedBuffer("#".getBytes())));
+                            pipeline.addLast(new StringDecoder());
 
                             pipeline.addLast(new EchoServerHandler());
                         }
