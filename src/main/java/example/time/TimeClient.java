@@ -1,5 +1,6 @@
 package example.time;
 
+import example.time.codec.TimeDecoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -31,7 +32,7 @@ public class TimeClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(new TimeClientHandler());
+                            socketChannel.pipeline().addLast(new TimeDecoder(), new TimeClientHandler());
                         }
                     })
                     .option(ChannelOption.SO_KEEPALIVE, true);
